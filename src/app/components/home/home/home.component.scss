@@ -1,0 +1,24 @@
+@import '../../../../styles.scss';
+.right {
+    width: 60%;
+    background: url('../../../../assets/icon/fondo.png');
+    background-size: cover;
+    background-position: center;
+    height: 80vh;
+}
+
+.left {
+    width: 40%;
+    height: 80vh;
+}
+
+.content-text {
+    color: black;
+    background-color: #b3e59f;
+    opacity: 0.9;
+    border-radius: 20px;
+}
+
+#side-screen {
+    display: flex;
+}

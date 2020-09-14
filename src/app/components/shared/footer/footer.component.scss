@@ -1,0 +1,14 @@
+$color-gray-one: #333333;
+$color-yellow-one: #FFCC29;
+.footer-uptc {
+    flex-shrink: 0;
+    padding-top: 10px;
+    padding-bottom: 16px;
+    background-color: $color-gray-one;
+    border-top: 2px solid $color-yellow-one;
+    display: flex;
+    flex-direction: row;
+    color: white !important;
+    font-style: italic;
+    font-weight: 100 !important;
+}
