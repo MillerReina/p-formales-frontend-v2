@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,4 +11,6 @@ export class TreeComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {}
+
+  saveChanges(form: FormGroup) {}
 }

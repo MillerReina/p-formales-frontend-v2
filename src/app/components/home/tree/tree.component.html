@@ -10,6 +10,31 @@
     </div>
 
     <div class="center-horizontal-vertical">
-
+        <div class="card text-white bg-success mb-3" style="max-width: 40rem;">
+            <div class="card-header">
+                <h1> Generar gramática </h1>
+            </div>
+            <div class="card-body">
+                <form autocomplete="off" (ngSubmit)="saveChanges(forma)" #forma="ngForm">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Simbolos terminales" name="terminal" required minlength="1" />
+                    </div>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" placeholder="Simbolos no terminales" name="no_terminal" required minlength="1" />
+                    </div>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" placeholder="Simbolos inicial" name="inicial" required minlength="1" />
+                    </div>
+                    <div class="input-group mt-2">
+                        <input type="text" class="form-control" placeholder="Producciones" name="produccion" required minlength="1" />
+                    </div>
+                    <div class="center-horizontal-vertical input-group mt-2">
+                        <button class="btn btn-success">
+                            Generar gramática
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
