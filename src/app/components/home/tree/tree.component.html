@@ -71,7 +71,7 @@
               name="produccion"
               [ngModel]="tree.simboloProducciones"
               minlength="1"
-              pattern="([A-Z][=][a-z0-9][|][a-z0-9])|([A-Z][=][a-z0-9])"
+          
               #produccion="ngModel"
               [class.is-invalid]="produccion.invalid && produccion.touched"
             />
