@@ -12,6 +12,7 @@ import * as am4plugins_forceDirected from '@amcharts/amcharts4/plugins/forceDire
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_material from '@amcharts/amcharts4/themes/dataviz';
 import * as am4charts from '@amcharts/amcharts4/charts';
+import { getParseErrors } from '@angular/compiler';
 
 @Component({
   selector: 'app-tree',
@@ -29,6 +30,7 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
   public producciones: any[] = [];
   public producctions: Production[] = []
   public babyProd = []
+  public root: {}
 
   constructor(private router: Router, @Inject(PLATFORM_ID) private platformId, private zone: NgZone) {
     this.tree = new Tree();
@@ -53,6 +55,11 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
+  // f(){
+  //   this.producctions.forEach(res =>{
+  //     this.getProductionsByNoter(res.simboloNoTer, [])
+  //   })
+  // }
 
 
   ngOnInit(): void {
@@ -64,66 +71,66 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.graphic();
   }
 
-
-
   agregarProduccion(produccion) {
     this.producciones.push(produccion.value);
   }
 
-
   addDatas() {
-    let children = []
-    let root = {
+    let level = 0
+    this.root = {
       name: this.tree.simboloInicial,
-      children: children
+      children: [],
+      size: 10
     }
-    this.producctions.forEach((res: Production) => {
-      if (res.simboloNoTer === this.tree.simboloInicial) {
-        console.log(res.simboloNoTer, this.tree.simboloInicial, 'simbolos');
-        res.simboloTer.forEach(ter => {
-          let babyChildren = []
-          this.validateBabyChildren(babyChildren, ter)
-          setTimeout(() => {
-            children.push({
-              name: ter,
-              children: babyChildren
-            })
-          }, 600);
-        })
-      }
-    })
-    setTimeout(() => {
-      this.dataSource.push(root)
-      console.log(this.dataSource, 'hike');
-    }, 700);
-
+    this.getProductionsByNoter(this.root['name'], this.root['children'], level)
+    /**children vacio */
   }
 
-  /**Validar si un nodo tiene hijos */
-  validateBabyChildren(babyChildren: any[], noter: string) {
-    for (let index = 0; index < noter.length; index++) {
-      if (noter.charCodeAt(index) >= 65 && noter.charCodeAt(index) <= 90) {
-        this.getProductionsByNoter(noter.charAt(index))
-      }
-    }
-    setTimeout(() => {
-      babyChildren = this.babyProd
-      console.log(babyChildren, 'baby');
-    }, 500);
-  }
+  // graphicTree(level, children) {
+  //   this.producctions.forEach((res: Production) => {
+  //     this.addChild(res.simboloTer, children)
+  //     while (level < 3) {
+  //       level++
+  //       console.log(children, 'hijo');
+  //       this.graphicTree(level, children[0]['children'])
+  //     }
+  //   })
+  // }
+
+  // addChild(simboloTer: string[], child: any[]) {
+  //   simboloTer.forEach(res => {
+  //     this.getProductionsByNoter(this.getTer(res), child)
+  //   })
+  // }
+
+  // getTer(terminal: string) {
+  //   let simboloNoTerminal = ''
+  //   for (let index = 0; index < terminal.length; index++) {
+  //     if (terminal.charCodeAt(index) >= 65 && terminal.charCodeAt(index) <= 90) {
+  //       simboloNoTerminal = terminal.charAt(index)
+  //     }
+  //   }
+  //   return simboloNoTerminal
+  // }
 
   /**Obtener las p´roducciones por Simbolo No terminal */
-  getProductionsByNoter(noTer: string) {
-    this.producctions.forEach((res: Production) => {
-      if (res.simboloNoTer == noTer) {
-        res.simboloTer.forEach(noter => {
-          this.babyProd.push({
-            name: noter,
-            children: []
+  getProductionsByNoter(noTer: string, child: any[], level) {
+    while (level < 3) {
+      this.producctions.forEach((res: Production) => {
+        if (res.simboloNoTer == noTer) {
+          level++
+          res.simboloTer.forEach(noter => {
+            child.push({
+              name: noter,
+              children: [],
+              size: 5
+            })
+            this.getProductionsByNoter(noter, child[0]['children'], level)
           })
-        })
-      }
-    })
+        }else{ level++}
+      })
+    }
+    this.dataSource.push(this.root)
   }
 
   generarGramatica(form: NgForm) {
@@ -251,10 +258,10 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
       chart.data = this.dataSource
     }, 1000);
 
-    networkSeries.dataFields.value = 'value';
+    networkSeries.dataFields.value = 'size';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
-    networkSeries.nodes.template.tooltipText = '{name}:{value}';
+    networkSeries.nodes.template.tooltipText = '{name}:{size}';
     networkSeries.nodes.template.fillOpacity = 1;
 
     networkSeries.nodes.template.label.text = '{name}';
