@@ -1,40 +1,121 @@
 <app-nav-bar></app-nav-bar>
 <div class="container">
-    <div class="row">
+    <div class="row header-tree">
         <div class="col-4">
-            <img src="assets/img/arbol.svg" alt="">
+            <img src="assets/img/arbol.svg" alt="" />
         </div>
         <div class="col-8 mt-5">
-            <h1> Módulo de gramáticas y árboles de derivación</h1>
+            <h1>Módulo de gramáticas y árboles de derivación</h1>
         </div>
     </div>
 
-    <div class="center-horizontal-vertical">
-        <div class="card text-white bg-success mb-3" style="max-width: 40rem;">
+    <div *ngIf="!state" class="center-horizontal-vertical">
+        <div class="card text-white bg-success mb-3" style="max-width: 40rem">
             <div class="card-header">
-                <h1> Generar gramática </h1>
+                <h1>Generar gramática</h1>
             </div>
             <div class="card-body">
-                <form autocomplete="off" (ngSubmit)="saveChanges(forma)" #forma="ngForm">
+                <form autocomplete="off" (ngSubmit)="generarGramatica(forma)" #forma="ngForm">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Simbolos terminales" name="terminal" required minlength="1" />
+                        <input type="text" class="form-control" placeholder="Simbolos terminales" name="terminal" [ngModel]="tree.simboloTer" required minlength="1" pattern="([a-z0-9]|(([a-z0-9][,])+[^,]$)+)" #terminal="ngModel" [class.is-invalid]="terminal.invalid && terminal.touched"
+                        />
                     </div>
-                    <div class="input-group mt-2">
-                        <input type="text" class="form-control" placeholder="Simbolos no terminales" name="no_terminal" required minlength="1" />
-                    </div>
-                    <div class="input-group mt-2">
-                        <input type="text" class="form-control" placeholder="Simbolos inicial" name="inicial" required minlength="1" />
-                    </div>
-                    <div class="input-group mt-2">
-                        <input type="text" class="form-control" placeholder="Producciones" name="produccion" required minlength="1" />
-                    </div>
-                    <div class="center-horizontal-vertical input-group mt-2">
-                        <button class="btn btn-success">
-                            Generar gramática
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                    <div>
+                        <small *ngIf="terminal.invalid && terminal.touched" class="form-text text-danger">
+              Ingrese simbolos terminales válidos</small
+            >
+          </div>
+          <div class="input-group mt-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Simbolos no terminales"
+              name="no_terminal"
+              [ngModel]="tree.simboloNoTer"
+              required
+              minlength="1"
+              pattern="([A-Z]|(([A-Z][,])+[^,]$)+)"
+              #no_terminal="ngModel"
+              [class.is-invalid]="no_terminal.invalid && no_terminal.touched"
+            />
+          </div>
+          <div>
+            <small *ngIf="no_terminal.invalid && no_terminal.touched" class="form-text text-danger">
+              Ingrese simbolos no terminales válidos</small
+            >
+          </div>
+          <div class="input-group mt-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Simbolos inicial"
+              name="inicial"
+              [ngModel]="tree.simboloInicial"
+              required
+              minlength="1"
+              pattern="[A-Z]"
+              #inicial="ngModel"
+              [class.is-invalid]="inicial.invalid && inicial.touched"
+            />
+          </div>
+          <div>
+            <small *ngIf="inicial.invalid && inicial.touched" class="form-text text-danger">
+              Ingrese simbolo inicial válido</small
+            >
+          </div>
+          <div class="input-group mt-2">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Producción"
+              name="produccion"
+              [ngModel]="tree.simboloProducciones"
+              minlength="1"
+              pattern="([A-Z][=][a-z0-9][|][a-z0-9])|([A-Z][=][a-z0-9])"
+              #produccion="ngModel"
+              [class.is-invalid]="produccion.invalid && produccion.touched"
+            />
+            <button class="btn btn-primary ml-1" type="button" (click)="agregarProduccion(produccion)">+</button>
+          </div>
+          <div>
+            <small *ngIf="produccion.invalid && produccion.touched" class="form-text text-danger">
+              Ingrese una producción valida</small
+            >
+          </div>
+
+          <div class="center-horizontal-vertical input-group mt-3">
+            <button class="btn btn-success" type="submit">Generar gramática</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+  <div class="container" id="father">
+    <div class="row">
+      <div class="col-10" id="chartdiv" style="width: 100%; height: 400px"></div>
+      <div class="cocard text-white bg-success mb-3 col-2" style="max-width: 20rem">
+        <div class="card-header center-horizontal"><strong>Opciones</strong></div>
+        <div class="card-body center-horizontal">
+          <img src="assets/img/busqueda.svg" alt="" />
+        </div>
+        <div class="input-group mt-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Palabra"
+            name="palabra"
+            [ngModel]=""
+            minlength="1"
+            pattern="[a-z0-9]+"
+            #palabra="ngModel"
+            [class.is-invalid]="palabra.invalid && palabra.touched"
+          />
+        </div>
+        <div class="center-horizontal-vertical input-group mt-3">
+          <button class="btn btn-success full-width" type="submit">Validar palabra</button>
+          <button class="btn btn-warning full-width mt-2" type="button" (click)="volver()">Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

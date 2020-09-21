@@ -1,13 +1,13 @@
 export class Tree {
-  private simboloTer: any;
-  private simboloNoTer: any;
-  private simboloInicial: any;
-  private simboloProducciones: any;
+  public simboloTer: any;
+  public simboloNoTer: any;
+  public simboloInicial: any;
+  public simboloProducciones: any;
 
   constructor() {
-    this.simboloTer = null;
-    this.simboloNoTer = null;
-    this.simboloInicial = null;
-    this.simboloProducciones = null;
+    this.simboloTer = '';
+    this.simboloNoTer = '';
+    this.simboloInicial = '';
+    this.simboloProducciones = '';
   }
 }
