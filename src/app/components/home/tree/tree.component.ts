@@ -21,6 +21,10 @@ import Swal from 'sweetalert2';
   styleUrls: ['./tree.component.scss'],
 })
 export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
+  /**Definimos las variables globales que vamos a utilizar en la implementación del módulo de árboles y gramáticas
+   * para el caso particulaar, las producciones, los simbolos terminales y no terminales, el árbol y la lista de
+   * palabras que son validadas por la gramática, basadas en el arbol de derivación 
+   */
   public tree: Tree;
   public state: boolean;
   public chart: any;
@@ -48,6 +52,13 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.graphic();
   }
 
+  /**
+   * Este método se ejecuta con el evento del clic de generar gramática, agregamos el array de simbolos
+   *  terminales, no terminales, producciones y el simbolo inicial axiomático, las validaciones de las reglas de
+   * las gramáticas por ejemplo que los simbolo no terminales sean letras mayúsculas, están hechas en el
+   * maquetado html mediante el uso de expresiones regulares
+   * @param form formulario que viene del maquetado de HTML
+   */
   generarGramatica(form: NgForm) {
     if (form.invalid) {
       Object.values(form.controls).forEach((res) => {
@@ -78,6 +89,14 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.producciones.push(produccion.value);
   }
 
+  /**
+   * Este método obtiene todas las producciones que se ingresan en el campo de producciones, siendo agregadas
+   * de forma dinámica a un arreglo de Producciones, en donde esta es una clase, además, teniendo en cuenta que
+   * la clase Produccion contiene los atributos: Simbolo Terminal, arreglo de símbolos no terminales, con base en
+   * esto, creamos una producción por cada uno de los campos del array que tomamos del formulario, cabe aclarar que
+   * el array que obtenemos del formulario vienen como Strings sin tratamiento, por ejemplo 'A=1|0A', por tal razon
+   * en este método hacemos la conversión a objetos
+   */
   getProductions() {
     this.producciones.forEach((element: string) => {
       let currentProduction = new Production();
@@ -101,6 +120,11 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  /**
+   * vamos declarar el nodo cabeza o root, el cual tiene como valor, el simbolo inicial establecido
+   *  en el formulario, agregamos un array, que serían sus hijos, además que son los datos que recibe la
+   *  librería amchart para la graficación de un arbol
+   */
   addDatas() {
     let level = 0;
     this.root = {
@@ -112,7 +136,16 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.push(this.root);
   }
 
-  /*Obtener las producciones por Simbolo No terminal */
+  /**
+   * el método hace la llamada recursiva para agregar los elementos de cada nodo(producciones por nodo)
+   * resaltar que cada nodo es validado, de llegar a encontrar un simbolo no terminal en la produccion o nodo,
+   * se hace el llamado recursivo para implementar sus producciones correspondinetes
+   * @param noTer símbolo no Terminal al cual vamos a agregar sus respectivas producciones
+   * @param child el array del elemento actual, el cual le vamos a agregar las producciones(hijos)
+   * @param level el nivel arbol, tiene un tope, para terminar la llamada recursiva
+   * @param i el index de cada nivel
+   * @param acarreo el acarreo que trae el nivel directamente anterior
+   */
   getProductionsByNoter(noTer: string, child: any[], level, i, acarreo) {
     let aux;
     this.producctions.forEach((noter) => {
@@ -172,7 +205,9 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 2000);
     /* } */
   }
-
+/**
+ * Limpia los campos del formulario cuando se ingresa una gramática correcta
+ */
   limpiarCampos() {
     this.tree.simboloTer = '';
     this.tree.simboloNoTer = '';
@@ -180,6 +215,12 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tree.simboloProducciones = '';
   }
 
+  /**
+   * 
+   * @param form el formulario del maquetado HTML, de donde obtenemos el campo de la palabra que se ingresa a validar
+   * Valida c que la palabra pertenezca al lenguaje, la palabra es validada mediante el array de palabras que se
+   * genera apartir del arbol de derivacion
+   */
   validarPalabra(form: NgForm) {
     let word = form.value.palabra;
     let aux = false;
@@ -215,6 +256,10 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+
+  /**
+   * Método de graficar el árbol, es el método de la librería de amcharts
+   */
   graphic() {
     /* Chart code */
     // Themes begin
