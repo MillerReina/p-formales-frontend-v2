@@ -71,7 +71,6 @@
               name="produccion"
               [ngModel]="tree.simboloProducciones"
               minlength="1"
-          
               #produccion="ngModel"
               [class.is-invalid]="produccion.invalid && produccion.touched"
             />
@@ -112,7 +111,9 @@
           />
         </div>
         <div class="center-horizontal-vertical input-group mt-3">
-          <button class="btn btn-success full-width" type="submit">Validar palabra</button>
+          <button class="btn btn-success full-width" type="button" (click)="validarPalabra(palabra.value)">
+            Validar palabra
+          </button>
           <button class="btn btn-warning full-width mt-2" type="button" (click)="volver()">Atrás</button>
         </div>
       </div>

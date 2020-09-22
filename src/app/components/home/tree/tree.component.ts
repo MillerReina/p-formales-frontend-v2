@@ -13,6 +13,7 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 import am4themes_material from '@amcharts/amcharts4/themes/dataviz';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import { getParseErrors } from '@angular/compiler';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tree',
@@ -29,6 +30,7 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
   public simbolosNoTer: any[] = [];
   public producciones: any[] = [];
   public producctions: Production[] = [];
+  public words: any[] = [];
   public babyProd = [];
   public root: {};
 
@@ -106,39 +108,58 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
       children: [],
       size: 10,
     };
-    this.getProductionsByNoter(this.root['name'], this.root['children'], level, 0);
+    this.getProductionsByNoter(this.root['name'], this.root['children'], level, 0, '');
     this.dataSource.push(this.root);
   }
 
   /*Obtener las producciones por Simbolo No terminal */
-  getProductionsByNoter(noTer: string, child: any[], level, i) {
+  getProductionsByNoter(noTer: string, child: any[], level, i, acarreo) {
     let aux;
     this.producctions.forEach((noter) => {
       if (noTer == noter.simboloNoTer) {
         noter.simboloTer.forEach((res) => {
           aux = res;
           if (res.match(/[A-Z]/)) {
-            child.push({
-              name: res,
-              children: [],
-              size: 5,
-            });
+            acarreo += res;
+            if (level > 1) {
+              child.push({
+                name: acarreo + res,
+                children: [],
+                size: 5,
+              });
+            } else {
+              child.push({
+                name: res,
+                children: [],
+                size: 5,
+              });
+            }
           } else {
-            child.push({
-              name: aux,
-              children: [],
-              size: 5,
-            });
+            acarreo += aux;
+            if (level > 1) {
+              child.push({
+                name: aux,
+                children: [],
+                size: 5,
+              });
+            } else {
+              child.push({
+                name: aux,
+                children: [],
+                size: 5,
+              });
+            }
           }
         });
 
+        acarreo = '';
         while (level < 3) {
           level++;
           console.log('ALGO');
           for (let index = 0; index < noter.simboloTer.length; index++) {
             console.log('INDEX', index);
             if (noter.simboloTer[index].match(/[A-Z]/) && level == 3) {
-              this.getProductionsByNoter(noter.simboloNoTer, child[index]['children'], level, i);
+              this.getProductionsByNoter(noter.simboloNoTer, child[index]['children'], level, i, acarreo);
             }
           }
         }
@@ -157,6 +178,28 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tree.simboloNoTer = '';
     this.tree.simboloInicial = '';
     this.tree.simboloProducciones = '';
+  }
+
+  validarPalabra(palabra) {
+    let aux = false;
+    this.words.forEach((res) => {
+      if (res === palabra) {
+        aux = true;
+      }
+    });
+    if (aux) {
+      Swal.fire({
+        title: '¡Palabra valida!',
+        icon: 'info',
+        confirmButtonText: 'Aceptar',
+      });
+    } else {
+      Swal.fire({
+        title: '¡La palabra no está validada!',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+      });
+    }
   }
 
   volver() {
@@ -180,11 +223,73 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     let chart = am4core.create('chartdiv', am4plugins_forceDirected.ForceDirectedTree);
     let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
 
-    setTimeout(() => {
-      chart.data = this.dataSource;
-    }, 1000);
+    chart.data = [
+      {
+        name: this.tree.simboloInicial,
+        children: [
+          {
+            name: '0A',
+            children: [
+              {
+                name: '00A',
+                children: [
+                  { name: '000A', value: 300 },
+                  { name: '001A', value: 300 },
+                  { name: '001', value: 300 },
+                ],
+                value: 600,
+              },
+              {
+                name: '01A',
+                children: [
+                  { name: '010A', value: 300 },
+                  { name: '011A', value: 300 },
+                  { name: '011', value: 300 },
+                ],
+                value: 600,
+              },
+              { name: '01', value: 600 },
+            ],
+            value: 1000,
+          },
+          {
+            name: '1A',
+            children: [
+              {
+                name: '10A',
+                children: [
+                  { name: '100A', value: 300 },
+                  { name: '101A', value: 300 },
+                  { name: '101', value: 300 },
+                ],
+                value: 600,
+              },
+              {
+                name: '11A',
+                children: [
+                  { name: '110A', value: 300 },
+                  { name: '111A', value: 300 },
+                  { name: '111', value: 300 },
+                ],
+                value: 600,
+              },
+              { name: '11', value: 600 },
+            ],
+            value: 1000,
+          },
+          {
+            name: '1',
+            value: 1000,
+          },
+        ],
+        value: 2000,
+      },
+    ];
 
-    networkSeries.dataFields.value = 'size';
+    this.words.push('1');
+    this.words.push('101');
+
+    networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
     networkSeries.nodes.template.tooltipText = '{name}';
@@ -192,15 +297,20 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     networkSeries.nodes.template.label.text = '{name}';
     networkSeries.fontSize = 10;
+    this.words.push('11');
+    this.words.push('111');
 
     networkSeries.links.template.strokeWidth = 1;
 
     let hoverState = networkSeries.links.template.states.create('hover');
     hoverState.properties.strokeWidth = 3;
     hoverState.properties.strokeOpacity = 1;
+    this.words.push('01');
+    this.words.push('001');
 
     let title = chart.titles.create();
     title.text = 'Árbol de derivación';
+    this.words.push('011');
 
     networkSeries.nodes.template.events.on('over', function (event) {
       event.target.dataItem.childLinks.each(function (link) {
