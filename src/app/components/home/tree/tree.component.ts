@@ -180,10 +180,11 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tree.simboloProducciones = '';
   }
 
-  validarPalabra(palabra) {
+  validarPalabra(form: NgForm) {
+    let word = form.value.palabra;
     let aux = false;
     this.words.forEach((res) => {
-      if (res === palabra) {
+      if (res === word) {
         aux = true;
       }
     });
