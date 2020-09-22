@@ -28,9 +28,9 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
   public simbolosTer: any[] = [];
   public simbolosNoTer: any[] = [];
   public producciones: any[] = [];
-  public producctions: Production[] = []
-  public babyProd = []
-  public root: {}
+  public producctions: Production[] = [];
+  public babyProd = [];
+  public root: {};
 
   constructor(private router: Router, @Inject(PLATFORM_ID) private platformId, private zone: NgZone) {
     this.tree = new Tree();
@@ -38,99 +38,12 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chart = null;
   }
 
-
-  getProductions() {
-    this.producciones.forEach((element: string) => {
-      let currentProduction = new Production()
-      currentProduction.simboloNoTer = element.substr(0, 1)
-      element.split('=').forEach(res => {
-        if (res.includes('|')) {
-          res.split('|').forEach(ter => {
-            currentProduction.simboloTer.push(ter)
-          })
-        }
-      })
-      this.producctions.push(currentProduction)
-    });
-  }
-
-
-  // f(){
-  //   this.producctions.forEach(res =>{
-  //     this.getProductionsByNoter(res.simboloNoTer, [])
-  //   })
-  // }
-
-
   ngOnInit(): void {
     document.getElementById('father').style.display = 'none';
   }
 
   ngAfterViewInit() {
-    /* this.getData(); */
     this.graphic();
-  }
-
-  agregarProduccion(produccion) {
-    this.producciones.push(produccion.value);
-  }
-
-  addDatas() {
-    let level = 0
-    this.root = {
-      name: this.tree.simboloInicial,
-      children: [],
-      size: 10
-    }
-    this.getProductionsByNoter(this.root['name'], this.root['children'], level)
-    /**children vacio */
-  }
-
-  // graphicTree(level, children) {
-  //   this.producctions.forEach((res: Production) => {
-  //     this.addChild(res.simboloTer, children)
-  //     while (level < 3) {
-  //       level++
-  //       console.log(children, 'hijo');
-  //       this.graphicTree(level, children[0]['children'])
-  //     }
-  //   })
-  // }
-
-  // addChild(simboloTer: string[], child: any[]) {
-  //   simboloTer.forEach(res => {
-  //     this.getProductionsByNoter(this.getTer(res), child)
-  //   })
-  // }
-
-  // getTer(terminal: string) {
-  //   let simboloNoTerminal = ''
-  //   for (let index = 0; index < terminal.length; index++) {
-  //     if (terminal.charCodeAt(index) >= 65 && terminal.charCodeAt(index) <= 90) {
-  //       simboloNoTerminal = terminal.charAt(index)
-  //     }
-  //   }
-  //   return simboloNoTerminal
-  // }
-
-  /**Obtener las p´roducciones por Simbolo No terminal */
-  getProductionsByNoter(noTer: string, child: any[], level) {
-    while (level < 3) {
-      this.producctions.forEach((res: Production) => {
-        if (res.simboloNoTer == noTer) {
-          level++
-          res.simboloTer.forEach(noter => {
-            child.push({
-              name: noter,
-              children: [],
-              size: 5
-            })
-            this.getProductionsByNoter(noter, child[0]['children'], level)
-          })
-        }else{ level++}
-      })
-    }
-    this.dataSource.push(this.root)
   }
 
   generarGramatica(form: NgForm) {
@@ -145,10 +58,10 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tree.simboloNoTer = form.value.no_terminal;
       this.tree.simboloInicial = form.value.inicial;
       this.tree.simboloProducciones = form.value.produccion;
-      this.producciones.push(form.value.produccion)
+      this.producciones.push(form.value.produccion);
       console.log(this.tree);
-      this.getProductions()
-      this.addDatas()
+      this.getProductions();
+      this.addDatas();
       if (this.state) {
         document.getElementById('father').style.display = 'block';
         this.graphic();
@@ -157,7 +70,86 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
         document.getElementById('father').style.display = 'none';
       }
     }
-    this.getProductions()
+  }
+
+  agregarProduccion(produccion) {
+    this.producciones.push(produccion.value);
+  }
+
+  getProductions() {
+    this.producciones.forEach((element: string) => {
+      let currentProduction = new Production();
+      if (element.includes('|')) {
+        let aux = element.split('|');
+        currentProduction.simboloNoTer = aux[0].substring(0, 1);
+        element.split('|').forEach((res) => {
+          if (res.includes('=')) {
+            let aux = res.substring(2, res.length);
+            currentProduction.simboloTer.push(aux);
+          } else {
+            currentProduction.simboloTer.push(res);
+          }
+        });
+      } else {
+        let aux = element.split('=');
+        currentProduction.simboloNoTer = aux[0];
+        currentProduction.simboloTer.push(aux[1]);
+      }
+      this.producctions.push(currentProduction);
+    });
+  }
+
+  addDatas() {
+    let level = 0;
+    this.root = {
+      name: this.tree.simboloInicial,
+      children: [],
+      size: 10,
+    };
+    this.getProductionsByNoter(this.root['name'], this.root['children'], level, 0);
+    this.dataSource.push(this.root);
+  }
+
+  /*Obtener las producciones por Simbolo No terminal */
+  getProductionsByNoter(noTer: string, child: any[], level, i) {
+    let aux;
+    this.producctions.forEach((noter) => {
+      if (noTer == noter.simboloNoTer) {
+        noter.simboloTer.forEach((res) => {
+          aux = res;
+          if (res.match(/[A-Z]/)) {
+            child.push({
+              name: res,
+              children: [],
+              size: 5,
+            });
+          } else {
+            child.push({
+              name: aux,
+              children: [],
+              size: 5,
+            });
+          }
+        });
+
+        while (level < 3) {
+          level++;
+          console.log('ALGO');
+          for (let index = 0; index < noter.simboloTer.length; index++) {
+            console.log('INDEX', index);
+            if (noter.simboloTer[index].match(/[A-Z]/) && level == 3) {
+              this.getProductionsByNoter(noter.simboloNoTer, child[index]['children'], level, i);
+            }
+          }
+        }
+      }
+    });
+
+    /* }); */
+    setTimeout(() => {
+      console.log(child[0], 'hijooo');
+    }, 2000);
+    /* } */
   }
 
   limpiarCampos() {
@@ -174,6 +166,8 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.graphic();
     } else {
       document.getElementById('father').style.display = 'none';
+      this.router.navigate(['/tree']);
+      window.location.reload();
     }
   }
 
@@ -186,82 +180,14 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     let chart = am4core.create('chartdiv', am4plugins_forceDirected.ForceDirectedTree);
     let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
 
-    /*chart.data = [
-      {
-        name: this.tree.simboloInicial,
-        children: [
-          {
-            name: 'First',
-            children: [
-              { name: 'A1', value: 100 },
-              { name: 'A2', value: 60 },
-            ],
-          },
-          {
-            name: 'Second',
-            children: [
-              { name: 'B1', value: 135 },
-              { name: 'B2', value: 98 },
-            ],
-          },
-          {
-            name: 'Third',
-            children: [
-              {
-                name: 'C1',
-                children: [
-                  { name: 'EE1', value: 130 },
-                  { name: 'EE2', value: 87 },
-                  { name: 'EE3', value: 55 },
-                ],
-              },
-              { name: 'C2', value: 148 },
-              {
-                name: 'C3',
-                children: [
-                  { name: 'CC1', value: 53 },
-                  { name: 'CC2', value: 30 },
-                ],
-              },
-              { name: 'C4', value: 26 },
-            ],
-          },
-          {
-            name: 'Fourth',
-            children: [
-              { name: 'D1', value: 415 },
-              { name: 'D2', value: 148 },
-              { name: 'D3', value: 89 },
-            ],
-          },
-          {
-            name: 'Fifth',
-            children: [
-              {
-                name: 'E1',
-                children: [
-                  { name: 'EE1', value: 33 },
-                  { name: 'EE2', value: 40 },
-                  { name: 'EE3', value: 89 },
-                ],
-              },
-              {
-                name: 'E2',
-                value: 148,
-              },
-            ],
-          },
-        ],
-      },
-    ];*/
     setTimeout(() => {
-      chart.data = this.dataSource
+      chart.data = this.dataSource;
     }, 1000);
 
     networkSeries.dataFields.value = 'size';
     networkSeries.dataFields.name = 'name';
     networkSeries.dataFields.children = 'children';
-    networkSeries.nodes.template.tooltipText = '{name}:{size}';
+    networkSeries.nodes.template.tooltipText = '{name}';
     networkSeries.nodes.template.fillOpacity = 1;
 
     networkSeries.nodes.template.label.text = '{name}';
