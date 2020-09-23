@@ -1,2 +1,19 @@
 <app-nav-bar></app-nav-bar>
-<p>re works!</p>
+<h1 class="mt-5 text-center" >Módulo de expresiones regulares</h1>
+<div class="col container">
+  <form id="regu" #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+    <div id="expregd">
+      <input id="regexp" name="reg" type="text" placeholder="expresion regular" ngModel>
+      <button type="button" (click)="comp()" id="aut">automata</button>
+    </div>
+    <textarea name="intext" class="mt-3 w-90 h-100" placeholder="Ingrese el texto aqui" ngModel></textarea>
+    <button type="submit" class="mt-1" >Comprobar</button>
+    <ng-container *ngIf="coincide; else elseTemplate">
+      <p class="text-success">{{msg}}</p>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <p class="text-danger">{{msg}}</p>
+    </ng-template>
+  </form>
+
+</div>
