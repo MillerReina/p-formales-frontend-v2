@@ -8,16 +8,18 @@ form{
 html { background-color: rgb(175, 215, 85); }
 #expregd{
   display: inline-block;
-  width: 60%;
+  width: 80%;
   margin: auto;
 }
 
 #regexp{
-  width: 50%;  
+  width: calc(100% - 90px);
 }
 
 #aut{
+  width: 90px;
   background-color: rgb(175, 215, 85);
+  float: right;
 }
 #comButton{
   width: 40%;
@@ -26,7 +28,25 @@ html { background-color: rgb(175, 215, 85); }
 }
 
 textarea{
-  width: 60%;
+  width: 80%;
   height: 60%;
   margin: auto;
+}
+
+.greenText{
+  color:green;
+}
+
+#textreg{
+  border:black solid 1px;
+  padding:20px;
+  width: 80%;
+  height: 400px;
+  margin-top: 10px;
+  margin: auto;
+}
+
+#expregd{
+  display: inline-block;
+  width: 80%;
 }
