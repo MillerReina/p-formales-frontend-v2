@@ -224,71 +224,7 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
     let chart = am4core.create('chartdiv', am4plugins_forceDirected.ForceDirectedTree);
     let networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
 
-    chart.data = [
-      {
-        name: this.tree.simboloInicial,
-        children: [
-          {
-            name: '0A',
-            children: [
-              {
-                name: '00A',
-                children: [
-                  { name: '000A', value: 300 },
-                  { name: '001A', value: 300 },
-                  { name: '001', value: 300 },
-                ],
-                value: 600,
-              },
-              {
-                name: '01A',
-                children: [
-                  { name: '010A', value: 300 },
-                  { name: '011A', value: 300 },
-                  { name: '011', value: 300 },
-                ],
-                value: 600,
-              },
-              { name: '01', value: 600 },
-            ],
-            value: 1000,
-          },
-          {
-            name: '1A',
-            children: [
-              {
-                name: '10A',
-                children: [
-                  { name: '100A', value: 300 },
-                  { name: '101A', value: 300 },
-                  { name: '101', value: 300 },
-                ],
-                value: 600,
-              },
-              {
-                name: '11A',
-                children: [
-                  { name: '110A', value: 300 },
-                  { name: '111A', value: 300 },
-                  { name: '111', value: 300 },
-                ],
-                value: 600,
-              },
-              { name: '11', value: 600 },
-            ],
-            value: 1000,
-          },
-          {
-            name: '1',
-            value: 1000,
-          },
-        ],
-        value: 2000,
-      },
-    ];
-
-    this.words.push('1');
-    this.words.push('101');
+    chart.data = this.dataSource;
 
     networkSeries.dataFields.value = 'value';
     networkSeries.dataFields.name = 'name';
@@ -298,20 +234,15 @@ export class TreeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     networkSeries.nodes.template.label.text = '{name}';
     networkSeries.fontSize = 10;
-    this.words.push('11');
-    this.words.push('111');
 
     networkSeries.links.template.strokeWidth = 1;
 
     let hoverState = networkSeries.links.template.states.create('hover');
     hoverState.properties.strokeWidth = 3;
     hoverState.properties.strokeOpacity = 1;
-    this.words.push('01');
-    this.words.push('001');
 
     let title = chart.titles.create();
     title.text = 'Árbol de derivación';
-    this.words.push('011');
 
     networkSeries.nodes.template.events.on('over', function (event) {
       event.target.dataItem.childLinks.each(function (link) {
