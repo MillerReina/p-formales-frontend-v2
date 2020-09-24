@@ -5,11 +5,28 @@ form{
   flex-direction: column;
 }
 
+html { background-color: rgb(175, 215, 85); }
 #expregd{
   display: inline-block;
-  width: 100%;
+  width: 60%;
+  margin: auto;
 }
 
 #regexp{
-  width: 93%;
+  width: 50%;  
+}
+
+#aut{
+  background-color: rgb(175, 215, 85);
+}
+#comButton{
+  width: 40%;
+  background-color: rgb(175, 215, 85);
+  margin: auto;
+}
+
+textarea{
+  width: 60%;
+  height: 60%;
+  margin: auto;
 }

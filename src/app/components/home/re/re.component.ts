@@ -26,7 +26,6 @@ export class ReComponent implements OnInit {
     }else{
       this.msg="No coincide";
     }
-    console.log('Test: ',er.test("abababc")," | exp: ",form.value.reg);
   }
 
   comp(){
